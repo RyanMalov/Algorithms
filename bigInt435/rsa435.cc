@@ -22,18 +22,18 @@ int main() {
          big1 = big1*10 +rand();
       }
       std::cout << "my big1 !!!\n";
-      std::cout << big1;
+      std::cout << big1 << std::endl << std::endl;
       BigInteger big2 = BigInteger(1);
       for (int i=0;i<400;i++) {
          big2 = big2*10 +rand();
       }
       std::cout << "my big2 !!!\n";
-      std::cout << big2;
+      std::cout << big2 << std::endl << std::endl;
       std::cout << "my big3 = big1*big2 !!!\n";
       BigInteger big3 = big1*big2;
-      std::cout <<big3;
+      std::cout <<big3 << std::endl << std::endl;
       std::cout << "my big3/big2 !!!\n";
-      std::cout <<big3/big2;
+      std::cout <<big3/big2 << std::endl << std::endl;
       
 	} catch(char const* err) {
 		std::cout << "The library threw an exception:\n"
