@@ -10,6 +10,8 @@
 
 // `BigIntegerLibrary.hh' includes all of the library headers.
 #include "BigIntegerLibrary.hh"
+#include "sha256.h"
+
 
 int main() {
 	try 
@@ -130,7 +132,14 @@ int main() {
 		std::cout << "e has been found.\n";
 
 		//Finding d
-		d = s;
+		if (s < 0)
+		{
+				d = s + phi;
+		}
+		else
+		{
+				d = s;
+		}
 		std::cout << "d has been found.\n";
 
 		//Open up the files to save values
