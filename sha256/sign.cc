@@ -34,12 +34,12 @@ int main(int argv, char* argc[])
 	myfile.close();
 
 	string str(memblock);
-	std::cout << str;
-	std::cout << "\nthe content";
+//	std::cout << str;
+//	std::cout << "\nthe content";
 	
 	string input = sha256(str);
 
-	std::cout << "\n" << input << "\n";
+//	std::cout << "\n" << input << "\n";
 
 	//Read in the d_n file
 	std::ifstream dnValues("d_n.txt");
@@ -52,12 +52,14 @@ int main(int argv, char* argc[])
 	}
 	
 	//Decrypt the encoded file using d_n
-	BigInteger test1 = stringToBigInteger(input);
+	//BigInteger test1 = stringToBigInteger16(input);
 	
-	BigInteger M = stringToBigInteger(input);
+	BigInteger M = stringToBigInteger16(input);
 	BigUnsigned D = stringToBigUnsigned(d);
 	BigUnsigned N = stringToBigUnsigned(n);
 	BigUnsigned signedM = modexp(M, D, N);
+	//std::cout << "\n" << "\n" << "signedM value is = " << signedM << "\n";
+	
 	
 	std::ofstream outfile;
 	outfile.open("file.txt.signature");
@@ -71,13 +73,46 @@ int main(int argv, char* argc[])
 
 	while(enValues >> e >> n1)
 	{
-			std::cout << e << "\n" << n1 << "\n";
+			//std::cout << e << "\n" << n1 << "\n";
 	}
-	BigUnsigned E = stringToBigUnsigned(e);
-	BigUnsigned Public = modexp(signedM, E, N);
-	std::cout << Public << "\n";	
 
-	if(Public == signedM)
+	std::string test1 = "test.txt";
+	std::ifstream myfile1 (test1.c_str(), std::ios::binary);
+	begin = myfile1.tellg();
+	myfile1.seekg(0, std::ios::end);
+	end = myfile1.tellg();
+	//size of file in the bytes
+	size = end - begin;
+	myfile1.seekg(0, std::ios::beg);
+
+	char * memblock1 = new char[size];
+	myfile1.read(memblock1, size);
+	memblock1[size]='\0';
+	myfile1.close();
+
+	string str1(memblock1);
+	std::cout << str1;
+	std::cout << "\n The content";
+
+	string compareMe = sha256(str1);
+	std::cout << "\n" << compareMe << "\n";
+
+	BigUnsigned M1 = stringToBigUnsigned16(compareMe);
+
+
+
+
+
+	BigUnsigned E = stringToBigUnsigned(e);
+	BigUnsigned signedMessage = modexp(signedM, E, N);
+	
+	
+
+
+	std::cout << "\n" << M1 << "\n";
+	std::cout << "\n" << signedMessage << "\n";	
+
+	if(signedMessage == M1)
 	{
 			std::cout << "Files unchanged\n";
 	}

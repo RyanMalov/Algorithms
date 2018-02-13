@@ -12,6 +12,10 @@ std::string bigIntegerToString(const BigInteger &x) {
 }
 
 BigUnsigned stringToBigUnsigned(const std::string &s) {
+	return BigUnsigned(BigUnsignedInABase(s, 10));
+}
+
+BigUnsigned stringToBigUnsigned16(const std::string &s) {
 	return BigUnsigned(BigUnsignedInABase(s, 16));
 }
 
@@ -20,6 +24,12 @@ BigInteger stringToBigInteger(const std::string &s) {
 	return (s[0] == '-') ? BigInteger(stringToBigUnsigned(s.substr(1, s.length() - 1)), BigInteger::negative)
 		: (s[0] == '+') ? BigInteger(stringToBigUnsigned(s.substr(1, s.length() - 1)))
 		: BigInteger(stringToBigUnsigned(s));
+}
+
+BigInteger stringToBigInteger16(const std::string &s) {
+		return (s[0] == '-') ? BigInteger(stringToBigUnsigned16(s.substr(1, s.length() - 1)), BigInteger::negative)
+			: (s[0] == '+') ? BigInteger(stringToBigUnsigned16(s.substr(1, s.length() - 1)))
+			: BigInteger(stringToBigUnsigned16(s));
 }
 
 std::ostream &operator <<(std::ostream &os, const BigUnsigned &x) {
