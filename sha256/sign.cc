@@ -13,10 +13,11 @@
 using namespace std;
 
 string InputFile();
-int main(int argv, char* argc[])
+int main(int argc, char* argv[])
 {
+	if(argv[0] == "s"){
 	//Read in the test file
-	std::string test = "test.txt";
+	std::string test = argv[1];
 	std::ifstream myfile (test.c_str(), std::ios::binary);
 	std::streampos begin,end;
 	begin = myfile.tellg();
@@ -66,6 +67,11 @@ int main(int argv, char* argc[])
 	outfile << signedM;
 	outfile.close();
 
+	}
+
+	if(argv[0] == "v"){
+	//Verify the signature
+
 	//Read in the e_n file
 	std::ifstream enValues("e_n.txt");
 	string e;
@@ -76,13 +82,14 @@ int main(int argv, char* argc[])
 			//std::cout << e << "\n" << n1 << "\n";
 	}
 
-	std::string test1 = "test.txt";
+	std::string test1 = argv[1];
 	std::ifstream myfile1 (test1.c_str(), std::ios::binary);
+	std::streampos begin, end;
 	begin = myfile1.tellg();
 	myfile1.seekg(0, std::ios::end);
 	end = myfile1.tellg();
 	//size of file in the bytes
-	size = end - begin;
+	std::streampos size = end - begin;
 	myfile1.seekg(0, std::ios::beg);
 
 	char * memblock1 = new char[size];
@@ -97,17 +104,23 @@ int main(int argv, char* argc[])
 	string compareMe = sha256(str1);
 	std::cout << "\n" << compareMe << "\n";
 
+
 	BigUnsigned M1 = stringToBigUnsigned16(compareMe);
-
-
-
-
-
 	BigUnsigned E = stringToBigUnsigned(e);
-	BigUnsigned signedMessage = modexp(signedM, E, N);
-	
-	
+	BigUnsigned N1 = stringToBigUnsigned(n1);
 
+	//Read the sign.txt.signature file
+	std::ifstream signValue("file.txt.signature");
+	string txtSignature;
+	while(signValue >> txtSignature)
+	{
+			std::cout << txtSignature;
+	}
+
+	BigUnsigned signedM1 = stringToBigUnsigned16(txtSignature);
+
+
+	BigUnsigned signedMessage = modexp(signedM1, E, N1);
 
 	std::cout << "\n" << M1 << "\n";
 	std::cout << "\n" << signedMessage << "\n";	
@@ -121,18 +134,6 @@ int main(int argv, char* argc[])
 			std::cout << "Files changed\n";
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+	}
 	return 0;
 }
