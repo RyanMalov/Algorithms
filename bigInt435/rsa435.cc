@@ -10,15 +10,10 @@
 
 // `BigIntegerLibrary.hh' includes all of the library headers.
 #include "BigIntegerLibrary.hh"
-#include "sha256.h"
-
 
 int main() {
 	try 
 	{
-		//std::ofstream p_q, e_n, d_n;
-
-
 		//Use flag for a prime success
 		bool prime = false;
 		
@@ -49,7 +44,7 @@ int main() {
 		{
 				//set variables for fermat test if not prime
 				p = 1;
-				a = 7;
+				a = 2;
 				FermatPassed = 0;
 
 				//Generate a random number that is 278 digits
@@ -85,7 +80,7 @@ int main() {
 		{
 				//setup variables for the fermat test if not prime
 				q = 1;
-				a = 7;
+				a = 2;
 				FermatPassed = 0;
 
 				//Generate a random number that is 278 digits

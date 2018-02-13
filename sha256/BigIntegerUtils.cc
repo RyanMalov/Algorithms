@@ -12,7 +12,7 @@ std::string bigIntegerToString(const BigInteger &x) {
 }
 
 BigUnsigned stringToBigUnsigned(const std::string &s) {
-	return BigUnsigned(BigUnsignedInABase(s, 10));
+	return BigUnsigned(BigUnsignedInABase(s, 16));
 }
 
 BigInteger stringToBigInteger(const std::string &s) {

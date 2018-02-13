@@ -12,6 +12,7 @@ library-objects = \
 	BigIntegerAlgorithms.o \
 	BigUnsignedInABase.o \
 	BigIntegerUtils.o \
+	sha256.o \
 
 library-headers = \
 	NumberlikeArray.hh \
@@ -20,6 +21,7 @@ library-headers = \
 	BigIntegerAlgorithms.hh \
 	BigUnsignedInABase.hh \
 	BigIntegerLibrary.hh \
+	sha256.h \
 
 # To ``make the library'', make all its objects using the implicit rule.
 library: $(library-objects)
@@ -29,17 +31,17 @@ $(library-objects): $(library-headers)
 
 # TESTSUITE (NOTE: Currently expects a 32-bit system)
 # Compiling the testsuite.
-testsuite.o: $(library-headers)
-testsuite: testsuite.o $(library-objects)
-	g++ $^ -o $@
+#testsuite.o: $(library-headers)
+#testsuite: testsuite.o $(library-objects)
+#	g++ $^ -o $@
 # Extract the expected output from the testsuite source.
-testsuite.expected: testsuite.cc
-	nl -ba -p -s: $< | sed -nre 's,^ +([0-9]+):.*//([^ ]),Line \1: \2,p' >$@
+#testsuite.expected: testsuite.cc
+#	nl -ba -p -s: $< | sed -nre 's,^ +([0-9]+):.*//([^ ]),Line \1: \2,p' >$@
 # Run the testsuite.
-.PHONY: test
-test: testsuite testsuite.expected
-	./run-testsuite
-testsuite-cleanfiles = \
+#.PHONY: test
+#test: testsuite testsuite.expected
+#	./run-testsuite
+#testsuite-cleanfiles = \
 	testsuite.o testsuite testsuite.expected \
 	testsuite.out testsuite.err
 
@@ -49,8 +51,8 @@ testsuite-cleanfiles = \
 # your own Makefile.
 
 # Components of the program.
-program = rsa435
-program-objects = rsa435.o
+program = sign
+program-objects = sign.o
 
 # Conservatively assume all the program source files depend on all the library
 # headers.  You can change this if it is not the case.
