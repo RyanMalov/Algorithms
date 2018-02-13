@@ -12,7 +12,6 @@ library-objects = \
 	BigIntegerAlgorithms.o \
 	BigUnsignedInABase.o \
 	BigIntegerUtils.o \
-	sha256.o \
 
 library-headers = \
 	NumberlikeArray.hh \
@@ -21,7 +20,6 @@ library-headers = \
 	BigIntegerAlgorithms.hh \
 	BigUnsignedInABase.hh \
 	BigIntegerLibrary.hh \
-	sha256.h \
 
 # To ``make the library'', make all its objects using the implicit rule.
 library: $(library-objects)

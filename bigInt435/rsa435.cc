@@ -17,17 +17,18 @@ int main() {
 		//Use flag for a prime success
 		bool prime = false;
 		
-		//Count number of Fermat tests passed
+		//Count the number of Fermat tests passed
 		int FermatPassed = 0;
 
 		std::ofstream p_q, e_n, d_n;
 
-		//Declaration of variables
+		//Declare variables
 		BigUnsigned p = 1;
 		BigUnsigned q = 1;
 		BigUnsigned n = 1;
 		BigInteger a = 7;
 		BigInteger phi = 0;
+		//for e, this is a large 5 digit prime number
 		BigInteger e = 44701;
 		BigInteger d = 0;
 		BigInteger r = 0;
