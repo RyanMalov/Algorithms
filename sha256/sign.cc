@@ -37,8 +37,6 @@ int main(int argc, char* argv[])
 	myfile.close();
 
 	string str(memblock);
-//	std::cout << str;
-//	std::cout << "\nthe content";
 
 	//Put the string through the Sha encoder	
 	string input = sha256(str);
@@ -64,6 +62,7 @@ int main(int argc, char* argv[])
 //	std::cout << "\n" << "\n" << "signedM value is = " << signedM << "\n";
 	std::string nameOfFile = argv[2];
 	nameOfFile += ".signature";
+//	std::cout << signedM << "\n";
 	//Put this signature in a seperate file	
 	std::ofstream outfile;
 	outfile.open(nameOfFile.c_str());
@@ -92,7 +91,9 @@ int main(int argc, char* argv[])
 
 	//File to verify
 	std::string test1 = argv[2];
+	std::string nameOfFile1 = argv[3];
 	std::ifstream myfile1 (test1.c_str(), std::ios::binary);
+	std::ifstream nameOfFileSign (nameOfFile1.c_str(), std::ios::binary);
 	std::streampos begin, end;
 	begin = myfile1.tellg();
 	myfile1.seekg(0, std::ios::end);
@@ -107,11 +108,8 @@ int main(int argc, char* argv[])
 	myfile1.close();
 
 	string str1(memblock1);
-//	std::cout << str1;
-//	std::cout << "\n The content";
 
 	string compareMe = sha256(str1);
-//	std::cout << "\n" << compareMe << "\n";
 
 
 	BigUnsigned M1 = stringToBigUnsigned16(compareMe);
@@ -119,16 +117,13 @@ int main(int argc, char* argv[])
 	BigUnsigned N1 = stringToBigUnsigned(n1);
 
 	//Read the signature file
-	std::string nameOfFile = argv[2];
-//	std::string nameOfFile1 = argv[3];
-	std::ifstream signValue(nameOfFile.c_str());
 	string txtSignature;
-	while(signValue >> txtSignature)
+	while(nameOfFileSign >> txtSignature)
 	{
 //			std::cout << txtSignature;
 	}
 
-	BigUnsigned signedM1 = stringToBigUnsigned16(txtSignature);
+	BigUnsigned signedM1 = stringToBigUnsigned(txtSignature);
 
 
 	BigUnsigned signedMessage = modexp(signedM1, E, N1);
