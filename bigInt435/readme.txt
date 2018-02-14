@@ -17,4 +17,7 @@ After all values are found, they are written into three seperate text files, whi
 the project. The files are:
 	p_q.txt
 	e_n.txt
-	d_n.txt
+	d_n.tx
+
+
+A README has been created for Part 2 of the project and is located in that folder.
