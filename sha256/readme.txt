@@ -7,3 +7,15 @@ To sign a file use the format given in the Professors instructions via her websi
 TO verify a file, follow the instructions for verifying.
 
 This part of the project takes a file and signs and verifies whether a file has been tampered with or not.
+
+TO RUN THE SIGN FUNCTION:
+
+IT REQUIRES -- For Windows sign.exe s <filename>
+IT REQUIRES -- For Linux   ./sign s <filename> 
+
+
+
+TO RUN THE VERIFY FUNCTION:
+
+IT REQUIRES -- For Windows sign.exe v <filename> <filename.signature>
+IT REQUIRES -- For Linux   ./sign v <filename> <filename.signature>
