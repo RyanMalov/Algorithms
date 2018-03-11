@@ -8,6 +8,7 @@
 #include <iterator>
 #include <vector> 
 #include <sys/stat.h>
+#include <cassert>
 
 /*
   This code is derived from LZW@RosettaCode for UA CS435 
@@ -156,7 +157,7 @@ int binaryString2Int(std::string p) {
 
 
 /*
-void binaryIODemo(std::vector<int> compressed) {
+void binaryIODemo(std::vector<int> compressed, std::string fileName) {
    int c = 69;
    int bits = 9;
    std::string p = int2BinaryString(c, bits);
@@ -177,9 +178,11 @@ void binaryIODemo(std::vector<int> compressed) {
    
    //writing to file
    std::cout << "string 2 save : "<<bcode << "\n";
-   std::string fileName = "example435.lzw";
-   std::ofstream myfile;
-   myfile.open(fileName.c_str(),  std::ios::binary);
+//   std::string fileName = argv[2];//"example435_test.lzw";
+   fileName += ".lzw";
+   std::ofstream myfile(fileName.c_str(), std::ios::binary);
+//   std::ofstream myfile;
+//   myfile.open(fileName.c_str(),  std::ios::binary);
    
    std::string zeros = "00000000";
    if (bcode.size()%8!=0) //make sure the length of the binary string is a multiple of 8
@@ -249,13 +252,51 @@ int main(int argc, char* argv[])
 	{
 		//Avector (or ASCII Vector) takes the input string of the selected
 		//file and stores them as integer values inside of a vector.
-		std::vector<int> Avector = compress(input, std::back_inserter(Avector));
+		std::vector<int> Avector;
+		compress(input, std::back_inserter(Avector));
 		copy(Avector.begin(), Avector.end(), std::ostream_iterator<int>(std::cout, ", "));
 		std::cout << std::endl;
-	}
+	
+	
+		//Convert Avector of ints to Binary
+		std::string Output;
+	
+		for(int i = 0; i < Avector.size(); i++)
+		{
+			Output.append(int2BinaryString(Avector[i], 12));
+		}
 
+		//Need to change the output so that its divisible by 8
+		auto bitLength = Output.length() % 8;
+		Output.append(bitLength, '0');
+
+		assert(Output.length() == (Output.length() % 8 + Output.length()));
+	
+		for(auto i = 0; i < Output.size(); i++)
+		{
+			std::string Segment = Output.substr(i, 8);
+			int newChar = binaryString2Int(Segment);
+			Output.replace(i, 8, 1, static_cast<char>(newChar));
+		}	
 		
-		
+		filename.append(".lzw");
+		std::ofstream outfile(filename.c_str(), std::ios::binary);
+		outfile << Output;
+		outfile.close();
+
+	}
+/*
+	else if(*argv[1] == 'e')
+	{
+		//Create a string
+		std::string newString;
+		for(auto i = 0; i < newString.length(); i++)
+		{
+			std::bitset<8> Bit(static_cast<int>(newString.at(i)));
+			str.append(Bit.to_string());
+		}
+
+/*		
 /*
 //This is the example code from the original project.
 		
