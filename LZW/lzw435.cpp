@@ -9,6 +9,7 @@
 #include <vector> 
 #include <sys/stat.h>
 #include <cassert>
+#include <bitset>
 
 /*
   This code is derived from LZW@RosettaCode for UA CS435 
@@ -285,18 +286,38 @@ int main(int argc, char* argv[])
 		outfile.close();
 
 	}
-/*
+
 	else if(*argv[1] == 'e')
 	{
 		//Create a string
 		std::string newString;
-		for(auto i = 0; i < newString.length(); i++)
+		for(auto i = 0; i < input.length(); i++)
 		{
-			std::bitset<8> Bit(static_cast<int>(newString.at(i)));
-			str.append(Bit.to_string());
+			std::bitset<8> Bit(static_cast<int>(input.at(i)));
+			newString.append(Bit.to_string());
 		}
 
-/*		
+		input = newString;
+		std::vector<int> Svector;
+		int Zeros = 4;
+		assert((input.length() - Zeros) % 12 == 0);
+		for(auto i = 0; i < input.size() - Zeros; i += 12)
+		{
+			std::string Istring = input.substr(i, 12);
+			assert(Istring.length() == 12);
+			std::cout << Istring << "\n";
+			assert(Istring.length() == 12);
+			Svector.push_back(binaryString2Int(Istring));
+		}
+
+		std::string d = decompress(Svector.begin(), Svector.end());
+		filename.append("2");
+		std::ofstream outfile(filename.c_str(), std::ios::binary);
+		outfile << d;
+		outfile.close();
+	}
+
+		
 /*
 //This is the example code from the original project.
 		
