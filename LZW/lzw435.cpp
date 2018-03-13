@@ -311,7 +311,7 @@ int main(int argc, char* argv[])
 		}
 
 		std::string d = decompress(Svector.begin(), Svector.end());
-		filename.append("2");
+//		filename.append("2");
 		std::ofstream outfile(filename.c_str(), std::ios::binary);
 		outfile << d;
 		outfile.close();
