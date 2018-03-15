@@ -1,6 +1,5 @@
 //Ryan Malov
 //Algorithms Project 2 LZW
-//Part 2
 
 #include <string>
 #include <map>
@@ -157,6 +156,7 @@ int binaryString2Int(std::string p) {
    return code;
 }
 
+
 /*
 void binaryIODemo(std::vector<int> compressed, std::string fileName) {
    int c = 69;
@@ -244,7 +244,20 @@ int main(int argc, char* argv[])
 
 	std::string filename = argv[2];
 	std::ifstream infile(filename.c_str(), std::ios::binary);
-	
+
+	//Testing a different way to read in the file to see
+	//if it fixes my problem
+/*	std::streampos begin,end;
+	begin = infile.tellg();
+	infile.seekg(0, std::ios::end);
+	end = infile.tellg();
+	std::streampos size = end - begin;
+	infile.seekg(0, std::ios::beg);
+	char* memblock = new char[size];
+	infile.read(memblock, size);
+	memblock[size]='\0';
+//	infile.close();
+*/	
 	//Create a string of the file contents that a read in	
 	std::string input{std::istreambuf_iterator<char>(infile), std::istreambuf_iterator<char>()};
 	infile.close();
@@ -255,70 +268,7 @@ int main(int argc, char* argv[])
 		//file and stores them as integer values inside of a vector.
 		std::vector<int> Avector;
 		compress(input, std::back_inserter(Avector));
-		
-		//Change the bit size up to 16
-		int bits;
-		std::string s;
-		std::string BinCode = "";
-
-		for(std::vector<int>::iterator iter = Avector.begin(); iter != Avector.end(); iter++)
-		{
-			int BitsReq = iter - Avector.begin();
-			if(BitsReq < 256)
-			{
-				bits = 9;
-			}
-			else if(256 <= BitsReq && BitsReq < 768)
-			{
-				bits = 10;
-			}
-			else if(768 <= BitsReq && BitsReq < 1792)
-			{
-				bits = 11;
-			}
-			else if (1792 <= BitsReq && BitsReq < 3840)
-			{
-				bits = 12;
-			}
-			else if(3840 <= BitsReq && BitsReq < 7936)
-			{
-				bits = 13;
-			}
-			else if(7936 <= BitsReq && BitsReq < 16128)
-			{
-				bits = 14;
-			}
-			else if(16128 <= BitsReq && BitsReq < 32512)
-			{
-				bits = 15;
-			}
-/*			else if(16384 <= BitsReq && BitsReq < 32768)
-			{
-				bits = 15;
-			}
-			else if(32768 <= BitsReq && BitsReq < 65536)
-			{
-				bits = 16;
-			}
-			else
-			{
-				std::cerr << "Too many bits!\n";
-			}
-			
-*/			
-			else
-			{
-				bits = 16;
-			}
-			s = int2BinaryString(*iter, bits);
-			BinCode+=s;
-		}
-
-		filename.append(".lzw");
-		std::ofstream outfile;
-		outfile.open(filename.c_str(), std::ios::binary);		
-
-//		copy(Avector.begin(), Avector.end(), std::ostream_iterator<int>(std::cout, ", "));
+		copy(Avector.begin(), Avector.end(), std::ostream_iterator<int>(std::cout, ", "));
 		std::cout << std::endl;
 	
 	
@@ -331,23 +281,27 @@ int main(int argc, char* argv[])
 		}
 
 		//Need to change the output so that its divisible by 8
-		auto bitLength = Output.length() % 8;
+		int bitLength = Output.length() % 8;
 		Output.append(bitLength, '0');
 
 		assert(Output.length() == (Output.length() % 8 + Output.length()));
-	
-		for(auto i = 0; i < Output.size(); i++)
+		
+		std::string Segment;
+
+		for(int i = 0; i < Output.size(); i++)
 		{
-			std::string Segment = Output.substr(i, 8);
-			int newChar = binaryString2Int(Segment);
-			Output.replace(i, 8, 1, static_cast<char>(newChar));
+//			std::string Segment = Output.substr(i, 8);
+			Segment = Output.substr(i, 8);
+			//int newChar = binaryString2Int(Segment);
+			//Output.replace(i, 8, 1, static_cast<char>(newChar));
+			Output.replace(i, 8, 1, (char)binaryString2Int(Segment));
 		}	
-/*		
+		
 		filename.append(".lzw");
 		std::ofstream outfile(filename.c_str(), std::ios::binary);
 		outfile << Output;
 		outfile.close();
-*/
+
 	}
 
 	else if(*argv[1] == 'e')
@@ -363,7 +317,7 @@ int main(int argc, char* argv[])
 		input = newString;
 		std::vector<int> Svector;
 		int Zeros = 4;
-		assert((input.length() - Zeros) % 12 == 0);
+//		assert((input.length() - Zeros) % 12 == 0);
 		for(auto i = 0; i < input.size() - Zeros; i += 12)
 		{
 			std::string Istring = input.substr(i, 12);
@@ -374,7 +328,7 @@ int main(int argc, char* argv[])
 		}
 
 		std::string d = decompress(Svector.begin(), Svector.end());
-//		filename.append("2");
+		filename.append("2");
 		std::ofstream outfile(filename.c_str(), std::ios::binary);
 		outfile << d;
 		outfile.close();
