@@ -69,7 +69,6 @@ std::string decompress(Iterator begin, Iterator end) {
 
   std::string w(1, *begin++);
   std::string result = w;
-//  std::cout << result<<"???:::\n";
   std::string entry;
 
   for ( ; begin != end; begin++) 
