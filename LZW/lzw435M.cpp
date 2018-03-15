@@ -1,5 +1,6 @@
 //Ryan Malov
 //Algorithms Project 2 LZW
+//Part 2
 
 #include <string>
 #include <map>
@@ -156,7 +157,6 @@ int binaryString2Int(std::string p) {
    return code;
 }
 
-
 /*
 void binaryIODemo(std::vector<int> compressed, std::string fileName) {
    int c = 69;
@@ -255,7 +255,70 @@ int main(int argc, char* argv[])
 		//file and stores them as integer values inside of a vector.
 		std::vector<int> Avector;
 		compress(input, std::back_inserter(Avector));
-		copy(Avector.begin(), Avector.end(), std::ostream_iterator<int>(std::cout, ", "));
+		
+		//Change the bit size up to 16
+		int bits;
+		std::string s;
+		std::string BinCode = "";
+
+		for(std::vector<int>::iterator iter = Avector.begin(); iter != Avector.end(); iter++)
+		{
+			int BitsReq = iter - Avector.begin();
+			if(BitsReq < 256)
+			{
+				bits = 9;
+			}
+			else if(256 <= BitsReq && BitsReq < 768)
+			{
+				bits = 10;
+			}
+			else if(768 <= BitsReq && BitsReq < 1792)
+			{
+				bits = 11;
+			}
+			else if (1792 <= BitsReq && BitsReq < 3840)
+			{
+				bits = 12;
+			}
+			else if(3840 <= BitsReq && BitsReq < 7936)
+			{
+				bits = 13;
+			}
+			else if(7936 <= BitsReq && BitsReq < 16128)
+			{
+				bits = 14;
+			}
+			else if(16128 <= BitsReq && BitsReq < 32512)
+			{
+				bits = 15;
+			}
+/*			else if(16384 <= BitsReq && BitsReq < 32768)
+			{
+				bits = 15;
+			}
+			else if(32768 <= BitsReq && BitsReq < 65536)
+			{
+				bits = 16;
+			}
+			else
+			{
+				std::cerr << "Too many bits!\n";
+			}
+			
+*/			
+			else
+			{
+				bits = 16;
+			}
+			s = int2BinaryString(*iter, bits);
+			BinCode+=s;
+		}
+
+		filename.append(".lzw");
+		std::ofstream outfile;
+		outfile.open(filename.c_str(), std::ios::binary);		
+
+//		copy(Avector.begin(), Avector.end(), std::ostream_iterator<int>(std::cout, ", "));
 		std::cout << std::endl;
 	
 	
@@ -279,12 +342,12 @@ int main(int argc, char* argv[])
 			int newChar = binaryString2Int(Segment);
 			Output.replace(i, 8, 1, static_cast<char>(newChar));
 		}	
-		
+/*		
 		filename.append(".lzw");
 		std::ofstream outfile(filename.c_str(), std::ios::binary);
 		outfile << Output;
 		outfile.close();
-
+*/
 	}
 
 	else if(*argv[1] == 'e')

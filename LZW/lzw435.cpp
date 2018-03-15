@@ -244,7 +244,20 @@ int main(int argc, char* argv[])
 
 	std::string filename = argv[2];
 	std::ifstream infile(filename.c_str(), std::ios::binary);
-	
+
+	//Testing a different way to read in the file to see
+	//if it fixes my problem
+/*	std::streampos begin,end;
+	begin = infile.tellg();
+	infile.seekg(0, std::ios::end);
+	end = infile.tellg();
+	std::streampos size = end - begin;
+	infile.seekg(0, std::ios::beg);
+	char* memblock = new char[size];
+	infile.read(memblock, size);
+	memblock[size]='\0';
+//	infile.close();
+*/	
 	//Create a string of the file contents that a read in	
 	std::string input{std::istreambuf_iterator<char>(infile), std::istreambuf_iterator<char>()};
 	infile.close();
@@ -268,16 +281,20 @@ int main(int argc, char* argv[])
 		}
 
 		//Need to change the output so that its divisible by 8
-		auto bitLength = Output.length() % 8;
+		int bitLength = Output.length() % 8;
 		Output.append(bitLength, '0');
 
 		assert(Output.length() == (Output.length() % 8 + Output.length()));
-	
-		for(auto i = 0; i < Output.size(); i++)
+		
+		std::string Segment;
+
+		for(int i = 0; i < Output.size(); i++)
 		{
-			std::string Segment = Output.substr(i, 8);
-			int newChar = binaryString2Int(Segment);
-			Output.replace(i, 8, 1, static_cast<char>(newChar));
+//			std::string Segment = Output.substr(i, 8);
+			Segment = Output.substr(i, 8);
+			//int newChar = binaryString2Int(Segment);
+			//Output.replace(i, 8, 1, static_cast<char>(newChar));
+			Output.replace(i, 8, 1, (char)binaryString2Int(Segment));
 		}	
 		
 		filename.append(".lzw");
@@ -300,7 +317,7 @@ int main(int argc, char* argv[])
 		input = newString;
 		std::vector<int> Svector;
 		int Zeros = 4;
-		assert((input.length() - Zeros) % 12 == 0);
+//		assert((input.length() - Zeros) % 12 == 0);
 		for(auto i = 0; i < input.size() - Zeros; i += 12)
 		{
 			std::string Istring = input.substr(i, 12);
@@ -311,7 +328,7 @@ int main(int argc, char* argv[])
 		}
 
 		std::string d = decompress(Svector.begin(), Svector.end());
-//		filename.append("2");
+		filename.append("2");
 		std::ofstream outfile(filename.c_str(), std::ios::binary);
 		outfile << d;
 		outfile.close();
