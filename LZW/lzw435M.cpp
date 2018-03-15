@@ -236,6 +236,7 @@ int main(int argc, char* argv[])
 		std::ofstream outfile(filename.c_str(), std::ios::binary);
 		outfile << BinCode;
 		outfile.close();
+		std::cout << "The file has been compressed! To expand the file, use the following command: ./lzwm e <filename>.lzwm\n";
 
 	}
 
@@ -305,7 +306,7 @@ int main(int argc, char* argv[])
 		outfile << d;
 		outfile.close();
 
-		std::cout << "Expansion is complete! To compare the file to the original file please use the following command: diff <Original Filename> <ExpandedFilename>.lzwm2\n";
+		std::cout << "Expansion is complete! To compare the file to the original file please use the following command: diff <Filename> <Filename>.lzwm2\n";
 		
 	}		
 }

@@ -154,84 +154,7 @@ int binaryString2Int(std::string p) {
    }
    return code;
 }
-
-
-/*
-void binaryIODemo(std::vector<int> compressed, std::string fileName) {
-   int c = 69;
-   int bits = 9;
-   std::string p = int2BinaryString(c, bits);
-   std::cout << "c=" << c <<" : binary string="<<p<<"; back to code=" << binaryString2Int(p)<<"\n";
-   
-   std::string bcode= "";
-   for (std::vector<int>::iterator it = compressed.begin() ; it != compressed.end(); ++it) {
-      if (*it<256)
-         bits = 8;
-      else
-         bits = 9;
-      
-      bits = 12;
-      p = int2BinaryString(*it, bits);
-      std::cout << "c=" << *it <<" : binary string="<<p<<"; back to code=" << binaryString2Int(p)<<"\n";
-      bcode+=p;
-   }
-   
-   //writing to file
-   std::cout << "string 2 save : "<<bcode << "\n";
-//   std::string fileName = argv[2];//"example435_test.lzw";
-   fileName += ".lzw";
-   std::ofstream myfile(fileName.c_str(), std::ios::binary);
-//   std::ofstream myfile;
-//   myfile.open(fileName.c_str(),  std::ios::binary);
-   
-   std::string zeros = "00000000";
-   if (bcode.size()%8!=0) //make sure the length of the binary string is a multiple of 8
-      bcode += zeros.substr(0, 8-bcode.size()%8);
-   
-   int b; 
-   for (int i = 0; i < bcode.size(); i+=8) { 
-      b = 1;
-      for (int j = 0; j < 8; j++) {
-         b = b<<1;
-         if (bcode.at(i+j) == '1')
-           b+=1;
-      }
-      char c = (char) (b & 255); //save the string byte by byte
-      myfile.write(&c, 1);  
-   }
-   myfile.close();
-   
-   //reading from a file
-   std::ifstream myfile2;
-   myfile2.open (fileName.c_str(),  std::ios::binary);
-   
-   struct stat filestatus;
-   stat(fileName.c_str(), &filestatus );
-   long fsize = filestatus.st_size; //get the size of the file in bytes
-   
-   char c2[fsize];
-   myfile2.read(c2, fsize);
-   
-   std::string s = "";
-   long count = 0;
-   while(count<fsize) {
-      unsigned char uc =  (unsigned char) c2[count];
-      std::string p = ""; //a binary string
-      for (int j=0; j<8 && uc>0; j++) {         
-		   if (uc%2==0)
-            p="0"+p;
-         else
-            p="1"+p;
-         uc=uc>>1;   
-      }
-      p = zeros.substr(0, 8-p.size()) + p; //pad 0s to left if needed
-      s+= p; 
-      count++;
-   } 
-   myfile2.close();
-   std::cout << " saved string : "<<s << "\n"; 
-}
-*/ 
+ 
 int main(int argc, char* argv[]) 
 {
 	//Throw error if not enough paramteters were  given.
@@ -243,20 +166,7 @@ int main(int argc, char* argv[])
 
 	std::string filename = argv[2];
 	std::ifstream infile(filename.c_str(), std::ios::binary);
-
-	//Testing a different way to read in the file to see
-	//if it fixes my problem
-/*	std::streampos begin,end;
-	begin = infile.tellg();
-	infile.seekg(0, std::ios::end);
-	end = infile.tellg();
-	std::streampos size = end - begin;
-	infile.seekg(0, std::ios::beg);
-	char* memblock = new char[size];
-	infile.read(memblock, size);
-	memblock[size]='\0';
-//	infile.close();
-*/	
+	
 	//Create a string of the file contents that a read in	
 	std::string input{std::istreambuf_iterator<char>(infile), std::istreambuf_iterator<char>()};
 	infile.close();
@@ -267,7 +177,7 @@ int main(int argc, char* argv[])
 		//file and stores them as integer values inside of a vector.
 		std::vector<int> Avector;
 		compress(input, std::back_inserter(Avector));
-		copy(Avector.begin(), Avector.end(), std::ostream_iterator<int>(std::cout, ", "));
+//		copy(Avector.begin(), Avector.end(), std::ostream_iterator<int>(std::cout, ", "));
 		std::cout << std::endl;
 	
 	
@@ -289,10 +199,7 @@ int main(int argc, char* argv[])
 
 		for(int i = 0; i < Output.size(); i++)
 		{
-//			std::string Segment = Output.substr(i, 8);
 			Segment = Output.substr(i, 8);
-			//int newChar = binaryString2Int(Segment);
-			//Output.replace(i, 8, 1, static_cast<char>(newChar));
 			Output.replace(i, 8, 1, (char)binaryString2Int(Segment));
 		}	
 		
@@ -300,6 +207,7 @@ int main(int argc, char* argv[])
 		std::ofstream outfile(filename.c_str(), std::ios::binary);
 		outfile << Output;
 		outfile.close();
+		std::cout << "The selected file has been compressed! To expand the compressed file please use the following command: ./lzw e <filename>.lzw\n";
 
 	}
 
@@ -316,12 +224,11 @@ int main(int argc, char* argv[])
 		input = newString;
 		std::vector<int> Svector;
 		int Zeros = 4;
-//		assert((input.length() - Zeros) % 12 == 0);
 		for(auto i = 0; i < input.size() - Zeros; i += 12)
 		{
 			std::string Istring = input.substr(i, 12);
 			assert(Istring.length() == 12);
-			std::cout << Istring << "\n";
+//			std::cout << Istring << "\n";
 			assert(Istring.length() == 12);
 			Svector.push_back(binaryString2Int(Istring));
 		}
@@ -331,21 +238,6 @@ int main(int argc, char* argv[])
 		std::ofstream outfile(filename.c_str(), std::ios::binary);
 		outfile << d;
 		outfile.close();
+		std::cout << "The file has been expanded! To compare the expanded file to the original file, please use the following command: diff <Original Filename> <Filename>.lzw2\n";
 	}
-
-		
-/*
-//This is the example code from the original project.
-		
-  std::vector<int> compressed;
-  compress("AAAAAAABBBBBB", std::back_inserter(compressed));
-  copy(compressed.begin(), compressed.end(), std::ostream_iterator<int>(std::cout, ", "));
-  std::cout << std::endl;
-  std::string decompressed = decompress(compressed.begin(), compressed.end());
-  std::cout << decompressed << std::endl;
-  
-  binaryIODemo(compressed);
-  
-  return 0;
-*/
 }
