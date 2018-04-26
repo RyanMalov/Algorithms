@@ -37,6 +37,60 @@ private:
 	int Height;
 };
 
+int main(int argc, char** argv)
+{
+	std::ifstream Image;
+	std::ofstream ProcessedImage;
+
+	try
+	{
+		//Check to see if the correct input has been used to run the Seam Carving
+		if(argc != 4)
+		{
+			throw "To run correctly: Program filename Number_of_Vertical_Seams Number_of_Horizontal_Seams";
+		}
+		
+		else
+		{
+			if(atoi(argv[2]) <= 0 || atoi(argv[3]) <= 0)
+			{
+				throw "Please select a number larger than zero";
+			}
+			
+			std::string filename = argv[1];
+			Image.open(filename.c_str(), std::ios::binary);
+			filename.erase(filename.length() - 4, 4);
+			filename = filename + "_processed.pgm";
+			ProcessedImage.open(filename.c_str(), std::ios::binary);
+
+			if (!Image.is_open())
+			{
+				throw "Cannot open Image file";
+			}
+
+			if (!ProcessedImage.is_open())
+			{
+				throw "Cannot create output file";
+			}
+		}
+	} 
+	catch (const char* err)
+	{
+		std::cout << "The application threw an exception: " << err << std::endl;
+	}
+	
+	SeamCarving sCarve
+	sCarve.get_header(Image);
+	sCarve.populate_pixel_matrix(Image);
+	sCarve.remove_vertical_seams(atoi(argv[2]));
+	sCarve.remove_horizontal_seams(atoi(argv[3]));
+	sCarve.write_file(ProcessedImage);
+	Image.close();
+	ProcessedImage.close();
+
+	return 0;
+}
+
 //Printing
 void SeamCarving::print(std::vector<std::vector<int>> Matrix)
 {
@@ -95,7 +149,7 @@ void SeamCarving::getHeader(std::ifstream& Image)
 	Height = stoi(y);
 }
 
-//Fill a matrix with values from image
+//Fill a matrix with values from Image
 void SeamCarving::PopulateImageMatrix(std::ifstream& Image)
 {
 	//Resize the vector
@@ -283,7 +337,7 @@ void SeamCarving::FindVertSeams()
 	}
 }
 
-//Remove the Vertical Seams from the image
+//Remove the Vertical Seams from the Image
 void SeamCarving::RemoveVertSeams(int VertSeams)
 {
 	while(VertSeams > 0)
@@ -398,7 +452,7 @@ void SeamCarving::RemoveHorzSeams(int HorzSeams) {
 
 */
 
-//Output the new image/file
+//Output the new Image/file
 void SeamCarving::WriteFile(std::ofstream& output)
 {
 	std::vector<std::vector<int>>::iterator row;
