@@ -1,4 +1,3 @@
-#pragma once
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
@@ -20,9 +19,9 @@ public:
 	void PopulateCumulativeMatrix();
 	void FindVertSeams();
 	auto FindMinCol();
-	void FindHorzSeams();
+//	void FindHorzSeams();
 	void RemoveVertSeams(int VertSeams);
-	void RemoveHorzSeams(int HorzSeams);
+//	void RemoveHorzSeams(int HorzSeams);
 	void WriteFile(std::ofstream& output);
 
 private:
@@ -327,6 +326,8 @@ auto SeamCarving::FindMinCol()
 	}
 }
 
+/*
+
 //Find the Horizonal Seams
 void SeamCarving::FindHorzSeams()
 {
@@ -394,6 +395,8 @@ void SeamCarving::RemoveHorzSeams(int HorzSeams) {
 
 	print(ImageMatrix);
 }
+
+*/
 
 //Output the new image/file
 void SeamCarving::WriteFile(std::ofstream& output)
