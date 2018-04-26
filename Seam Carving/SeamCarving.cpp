@@ -79,12 +79,12 @@ int main(int argc, char** argv)
 		std::cout << "The application threw an exception: " << err << std::endl;
 	}
 	
-	SeamCarving sCarve
-	sCarve.get_header(Image);
-	sCarve.populate_pixel_matrix(Image);
-	sCarve.remove_vertical_seams(atoi(argv[2]));
-	sCarve.remove_horizontal_seams(atoi(argv[3]));
-	sCarve.write_file(ProcessedImage);
+	SeamCarving sCarve;
+	sCarve.getHeader(Image);
+	sCarve.PopulateImageMatrix(Image);
+	sCarve.RemoveVertSeams(atoi(argv[2]));
+//	sCarve.RemoveHorzSeams(atoi(argv[3]));
+	sCarve.WriteFile(ProcessedImage);
 	Image.close();
 	ProcessedImage.close();
 
