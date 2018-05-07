@@ -23,6 +23,4 @@ lines of pixel both vertically and horizontally withing this project.
 
 THINGS TO NOTE ABOUT MY PROJECT:
 
-I could not get the horizontal carving to work. I thought I had a general idea of how to make it work, but due to
-various time constraints and probably poor planning on my part, I was not able to get that part to work. However,
-everything else should be working correctly.
+This is a re-submission.

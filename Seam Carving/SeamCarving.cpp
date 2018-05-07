@@ -21,13 +21,15 @@ public:
 	void getHeader(std::ifstream& Image);
 	void PopulateImageMatrix(std::ifstream& Image);
 	void PopulateEnergyMatrix();
-	void PopulateCumulativeMatrix();
+	void PopulateCumulativeVertMatrix();
+	void PopulateCumulativeHorzMatrix();
 	void FindVertSeams();
-	auto FindMinCol();
-//	void FindHorzSeams();
+//	auto FindMinCol();
+	void FindHorzSeams();
 	void RemoveVertSeams(int VertSeams);
-//	void RemoveHorzSeams(int HorzSeams);
+	void RemoveHorzSeams(int HorzSeams);
 	void WriteFile(std::ofstream& output);
+	void rotate(int a);
 
 private:
 
@@ -42,6 +44,8 @@ private:
 	std::string GrayMax;
 	int	Width;
 	int Height;
+	std::vector<std::vector<int>> CumulativeRotated;
+	std::vector<std::vector<int>> ImageRotated;
 };
 
 int main(int argc, char** argv)
@@ -262,9 +266,10 @@ void SeamCarving::PopulateEnergyMatrix()
 	}
 }
 
-//Fill in the CumulativeMatrix with the difference values from the energy matrix
-void SeamCarving::PopulateCumulativeMatrix()
+//Fill in the Vertical CumulativeMatrix with the difference values from the energy matrix
+void SeamCarving::PopulateCumulativeVertMatrix()
 {
+	CumulativeMatrix.clear();
 	CumulativeMatrix.resize(Height);
 	
 	for(int i = 0; i < Height; i++)
@@ -301,13 +306,16 @@ void SeamCarving::PopulateCumulativeMatrix()
 			}
 		}
 	}
-	print(CumulativeMatrix);
+//	print(CumulativeMatrix);
 }
 
 //Find the vertical seams from the cumulative matrix
 void SeamCarving::FindVertSeams()
 { 
 	std::vector<int>::iterator iter;
+
+	//Clear the map that holds the path
+	Position.clear();
 	
 	iter = std::min_element(CumulativeMatrix[Height - 1].begin(), CumulativeMatrix[Height - 1].end());
 	Position[Height-1] = std::distance(std::begin(CumulativeMatrix[Height - 1]), iter);
@@ -338,7 +346,7 @@ void SeamCarving::FindVertSeams()
 		//Everything else
 		else
 		{
-			iter = std::min_element(CumulativeMatrix[row - 1].begin() + Position[row] - 1, CumulativeMatrix[row - 1].begin() + Position[row] + 1);
+			iter = std::min_element(CumulativeMatrix[row - 1].begin() + Position[row] - 1, CumulativeMatrix[row - 1].begin() + Position[row] + 2);
 			Position[row - 1] = std::distance(std::begin(CumulativeMatrix[row - 1]), iter);
 		}
 	}
@@ -350,21 +358,185 @@ void SeamCarving::RemoveVertSeams(int VertSeams)
 	while(VertSeams > 0)
 	{
 		PopulateEnergyMatrix();
-		PopulateCumulativeMatrix();
+		PopulateCumulativeVertMatrix();
 		FindVertSeams();
 		
 		for(auto i : Position)
 		{
 			ImageMatrix[i.first].erase(ImageMatrix[i.first].begin() + i.second);
-			CumulativeMatrix[i.first].erase(CumulativeMatrix[i.first].begin() + i.second);
+//			CumulativeMatrix[i.first].erase(CumulativeMatrix[i.first].begin() + i.second);
 		}
 
 		Width--;
 		VertSeams--;
 	}
 
-	print(ImageMatrix);
+//	print(ImageMatrix);
 }
+
+//Populate the Horizontal CumulativeMatrix
+void SeamCarving::PopulateCumulativeHorzMatrix()
+{
+	//Resize the matrix
+	CumulativeMatrix.clear();
+	CumulativeMatrix.resize(Height);
+
+	for(int i = 0; i < Height; i++)
+	{
+		CumulativeMatrix[i].resize(Width);
+	}
+
+	//Copy the top row of the cumulative matrix
+	for(int y = 0; y < Height; y++)
+	{
+		CumulativeMatrix[y][0] = EnergyMatrix[y][0];
+	}
+
+	for(int x = 1; x < Width; x++)
+	{
+		for(int y = 0; y < Height; y++)
+		{
+			//The Top
+			if(y == 0)
+			{
+				CumulativeMatrix[y][x] = EnergyMatrix[y][x] + std::min(CumulativeMatrix[y][x - 1], CumulativeMatrix[y + 1][x - 1]);
+			}
+
+			//The Bottom
+			else if(y == Height - 1)
+			{
+				CumulativeMatrix[y][x] = EnergyMatrix[y][x] + std::min(CumulativeMatrix[y][x - 1], CumulativeMatrix[y - 1][x - 1]);
+			}
+
+			//The rest
+			else
+			{
+				CumulativeMatrix[y][x] = EnergyMatrix[y][x] + std::min(std::min(CumulativeMatrix[y + 1][x - 1], CumulativeMatrix[y][x - 1]), CumulativeMatrix[y - 1][x - 1]);
+			}
+		}
+	}
+}
+
+//Rotate the matricies so that I can do Horizontal paths
+void SeamCarving::rotate(int a)
+{
+	if(a == 0)
+	{
+		//Resize the matrix
+		CumulativeRotated.resize(Width);
+		ImageRotated.resize(Width);
+
+		for(int i = 0; i < Width; i++)
+		{
+			CumulativeRotated[i].resize(Height);
+			ImageRotated[i].resize(Height);
+		}
+
+		//Do the rotation
+		for(int i = 0; i < Width; i++)
+		{
+			for(int j = 0; j < Height; j++)
+			{
+				CumulativeRotated[i][j] = CumulativeMatrix[Height - 1 - j][i];
+				ImageRotated[i][j] = ImageMatrix[Height - 1 - j][i];
+			}
+		}
+	}
+
+	else if(a == 1)
+	{
+		ImageMatrix.clear();
+		ImageMatrix.resize(Height);
+
+		for(int i = 0; i < Height; i++)
+		{
+			ImageMatrix[i].resize(Width);
+		}
+
+		//Rotate
+		for(int i = 0; i < Height; i++)
+		{
+			for(int j = 0; j < Width; j++)
+			{
+				ImageMatrix[i][j] = ImageRotated[j][Height - 1 - i];
+			}
+		}
+	}
+	else
+	{
+		std::cout << "Something went horribly wrong" << std::endl;
+	}
+}
+
+//Find the shortest horizontal path
+void SeamCarving::FindHorzSeams()
+{
+	std::vector<int>::iterator itor;
+
+	//clear the map
+	Position.clear();
+
+	//Find the smallest element in the bottom row
+	itor = std::min_element(CumulativeRotated[Width - 1].begin(), CumulativeRotated[Width - 1].end());
+	Position[Width - 1] = std::distance(std::begin(CumulativeRotated[Width - 1]), itor);
+
+	for(int row = Width - 1; row > 0; row--)
+	{
+		//The Left Side
+		if(Position[row] == 0)
+		{
+			itor = std::min_element(CumulativeRotated[row - 1].end() - 2, CumulativeRotated[row - 1].begin() + 2);
+			Position[row - 1] = std::distance(std::begin(CumulativeRotated[row - 1]), itor);
+		}
+
+		//The Right Side
+		else if(Position[row] == Height - 1)
+		{
+			itor = std::min_element(CumulativeRotated[row - 1].end() - 2, CumulativeRotated[row - 1].end());
+			Position[row - 1] = std::distance(std::begin(CumulativeRotated[row - 1]), itor);
+		}
+
+		//For special cases to make sure everything works
+		else if(Height <= 3)
+		{
+			itor = std::min_element(CumulativeRotated[row - 1].begin(), CumulativeRotated[row - 1].end());
+			Position[row - 1] = std::distance(std::begin(CumulativeRotated[row - 1]), itor);
+		}
+
+		//Everything else
+		else
+		{
+			itor = std::min_element(CumulativeRotated[row - 1].begin() + Position[row] - 1, CumulativeRotated[row - 1].begin() + Position[row] + 2);
+			Position[row - 1] = std::distance(std::begin(CumulativeRotated[row - 1]), itor);
+		}
+	}
+}
+
+//Remove the Horizontal seams
+void SeamCarving::RemoveHorzSeams(int HorzSeams)
+{
+	while(HorzSeams > 0)
+	{
+		PopulateEnergyMatrix();
+		PopulateCumulativeHorzMatrix();
+		rotate(0);
+		FindHorzSeams();
+
+		for(auto i : Position)
+		{
+			ImageRotated[i.first].erase(ImageRotated[i.first].begin() + i.second);
+		}
+
+		HorzSeams--;
+		Height--;
+		rotate(1);
+	}
+}
+
+			
+
+
+/*
 
 //Find the minimal column so that we can get ready for removal
 auto SeamCarving::FindMinCol()
@@ -387,7 +559,7 @@ auto SeamCarving::FindMinCol()
 	}
 }
 
-/*
+
 
 //Find the Horizonal Seams
 void SeamCarving::FindHorzSeams()
@@ -464,8 +636,8 @@ void SeamCarving::RemoveHorzSeams(int HorzSeams) {
 	print(ImageMatrix);
 }
 
-*/
 
+*/
 //Output the new Image/file
 void SeamCarving::WriteFile(std::ofstream& output)
 {
