@@ -681,7 +681,7 @@ void SeamCarving::WriteFile(std::ofstream& output)
 	output << "P2\n";
 	output << "#\n";
 	output << Width << " " << Height << "\n";
-	output << GrayMax;
+	output << GrayMax << std::endl;
 	
 	for(row = ImageMatrix.begin(); row != ImageMatrix.end(); row++)
 	{
