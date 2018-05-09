@@ -63,9 +63,9 @@ int main(int argc, char** argv)
 		
 		else
 		{
-			if(atoi(argv[2]) <= 0 || atoi(argv[3]) <= 0)
+			if(atoi(argv[2]) < 0 || atoi(argv[3]) < 0)
 			{
-				throw "Please select a number larger than zero";
+				throw "Please select a valid number";
 			}
 			
 			std::string filename = argv[1];
