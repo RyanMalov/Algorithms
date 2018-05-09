@@ -109,10 +109,10 @@ void SeamCarving::print(std::vector<std::vector<int>> Matrix)
 	{
 		for(int x = 0; x < Width; x++)
 		{
-//			std::cout << Matrix[y][x] << " ";
+			std::cout << Matrix[y][x] << " ";
 		}
 		
-//		std::cout << std::endl;
+		std::cout << std::endl;
 	}
 	
 //	std::cout << std::endl;
@@ -177,8 +177,17 @@ void SeamCarving::PopulateImageMatrix(std::ifstream& Image)
 		for(int x = 0; x < Width; x++)
 		{
 			Image >> ImageMatrix[y][x];
+//			std::cout << "This is the ImageMatrix" << std::endl;
+//			print(ImageMatrix);
+//			std::cout << std::endl;
+//			std::cout << ImageMatrix[y][x] << std::endl;
 		}
 	}
+//	std::cout << ImageMatrix[y][x];
+//	std::cout << std::endl;
+	std::cout << "This is the image matrix:" << std::endl;
+	print(ImageMatrix);
+	std::cout << std::endl;
 }
 
 //Fill in the Matrix which tells you how "active" a cell/pixel is
@@ -262,8 +271,15 @@ void SeamCarving::PopulateEnergyMatrix()
 			{
 				EnergyMatrix[y][x] = abs(ImageMatrix[y][x] - ImageMatrix[y][x - 1]) + abs(ImageMatrix[y][x] - ImageMatrix[y][x + 1]) + abs(ImageMatrix[y][x] - ImageMatrix[y - 1][x]) + abs(ImageMatrix[y][x] - ImageMatrix[y + 1][x]);
 			}
+
+//			std::cout << "This is the energy Matrix" << std::endl;
+//			print(EnergyMatrix);
+//			std::cout << EnergyMatrix[y][x] << std::endl;
 		}
 	}
+	std::cout << "this is the energy matrix:" << std::endl;
+	print(EnergyMatrix);
+	std::cout << std::endl;
 }
 
 //Fill in the Vertical CumulativeMatrix with the difference values from the energy matrix
@@ -290,23 +306,25 @@ void SeamCarving::PopulateCumulativeVertMatrix()
 			//Left side of the cumulative matrix
 			if(x == 0)
 			{
-				CumulativeMatrix[y][x] = EnergyMatrix[y][x] + std::min(EnergyMatrix[y-1][x], EnergyMatrix[y-1][x+1]);
+				CumulativeMatrix[y][x] = EnergyMatrix[y][x] + std::min(CumulativeMatrix[y-1][x], CumulativeMatrix[y-1][x+1]);
 			}
 
 			//Right side of the cumulative matrix
 			else if(x == Width - 1)
 			{
-				CumulativeMatrix[y][x] = EnergyMatrix[y][x] + std::min(EnergyMatrix[y-1][x], EnergyMatrix[y-1][x-1]);
+				CumulativeMatrix[y][x] = EnergyMatrix[y][x] + std::min(CumulativeMatrix[y-1][x], CumulativeMatrix[y-1][x-1]);
 			}
 
 			//Others
 			else
 			{
-				CumulativeMatrix[y][x] = EnergyMatrix[y][x] + std::min(std::min(EnergyMatrix[y-1][x-1], EnergyMatrix[y-1][x]), EnergyMatrix[y-1][x+1]);
+				CumulativeMatrix[y][x] = EnergyMatrix[y][x] + std::min(std::min(CumulativeMatrix[y-1][x-1], CumulativeMatrix[y-1][x]), CumulativeMatrix[y-1][x+1]);
 			}
 		}
 	}
-//	print(CumulativeMatrix);
+	std::cout << "This is the PopulateCumulativeVertMatrix:" << std::endl;
+	print(CumulativeMatrix);
+	std::cout << std::endl;
 }
 
 //Find the vertical seams from the cumulative matrix
@@ -350,6 +368,9 @@ void SeamCarving::FindVertSeams()
 			Position[row - 1] = std::distance(std::begin(CumulativeMatrix[row - 1]), iter);
 		}
 	}
+//	std::cout << "This is the FindVertSeams" << std::endl;
+//	print(FindVertSeams);
+//	std::cout << std::endl;
 }
 
 //Remove the Vertical Seams from the Image
@@ -370,8 +391,9 @@ void SeamCarving::RemoveVertSeams(int VertSeams)
 		Width--;
 		VertSeams--;
 	}
-
-//	print(ImageMatrix);
+//	std::cout << "This is the Remove Vert Seams:" << std::endl;
+//	print(RemoveVertSeams);
+//	std::cout << std::endl;
 }
 
 //Populate the Horizontal CumulativeMatrix
@@ -415,6 +437,9 @@ void SeamCarving::PopulateCumulativeHorzMatrix()
 			}
 		}
 	}
+	std::cout << "This is the Populate Cumulative Horz matrix:" << std::endl;
+	print(CumulativeMatrix);
+	std::cout << std::endl;
 }
 
 //Rotate the matricies so that I can do Horizontal paths
@@ -510,6 +535,9 @@ void SeamCarving::FindHorzSeams()
 			Position[row - 1] = std::distance(std::begin(CumulativeRotated[row - 1]), itor);
 		}
 	}
+//	std::cout << "This is the FindHorzSeam:" << std::endl;
+//	print(FindHOrzSeams);
+//	std::cout << std::endl;
 }
 
 //Remove the Horizontal seams
@@ -531,6 +559,9 @@ void SeamCarving::RemoveHorzSeams(int HorzSeams)
 		Height--;
 		rotate(1);
 	}
+//	std::cout << "This is the RemoveHorzSeams:" << std::endl;
+//	print(RemoveHorzSeams);
+//	std::cout << std::endl;
 }
 
 			
