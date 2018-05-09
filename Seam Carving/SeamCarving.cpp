@@ -679,6 +679,7 @@ void SeamCarving::WriteFile(std::ofstream& output)
 	std::vector<int>::iterator column;
 
 	output << "P2\n";
+	output << "#\n";
 	output << Width << " " << Height << "\n";
 	output << GrayMax;
 	
