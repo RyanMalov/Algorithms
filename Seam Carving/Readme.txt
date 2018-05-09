@@ -23,4 +23,5 @@ lines of pixel both vertically and horizontally withing this project.
 
 THINGS TO NOTE ABOUT MY PROJECT:
 
-This is a re-submission.
+This is a re-submission. Also, horizontal has some functionality. It seems to work on some of the file but
+it will core dump on a few. The vertical should work for all cases.

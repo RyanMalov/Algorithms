@@ -24,7 +24,6 @@ public:
 	void PopulateCumulativeVertMatrix();
 	void PopulateCumulativeHorzMatrix();
 	void FindVertSeams();
-//	auto FindMinCol();
 	void FindHorzSeams();
 	void RemoveVertSeams(int VertSeams);
 	void RemoveHorzSeams(int HorzSeams);
@@ -177,14 +176,8 @@ void SeamCarving::PopulateImageMatrix(std::ifstream& Image)
 		for(int x = 0; x < Width; x++)
 		{
 			Image >> ImageMatrix[y][x];
-//			std::cout << "This is the ImageMatrix" << std::endl;
-//			print(ImageMatrix);
-//			std::cout << std::endl;
-//			std::cout << ImageMatrix[y][x] << std::endl;
 		}
 	}
-//	std::cout << ImageMatrix[y][x];
-//	std::cout << std::endl;
 //	std::cout << "This is the image matrix:" << std::endl;
 //	print(ImageMatrix);
 //	std::cout << std::endl;
@@ -271,10 +264,6 @@ void SeamCarving::PopulateEnergyMatrix()
 			{
 				EnergyMatrix[y][x] = abs(ImageMatrix[y][x] - ImageMatrix[y][x - 1]) + abs(ImageMatrix[y][x] - ImageMatrix[y][x + 1]) + abs(ImageMatrix[y][x] - ImageMatrix[y - 1][x]) + abs(ImageMatrix[y][x] - ImageMatrix[y + 1][x]);
 			}
-
-//			std::cout << "This is the energy Matrix" << std::endl;
-//			print(EnergyMatrix);
-//			std::cout << EnergyMatrix[y][x] << std::endl;
 		}
 	}
 //	std::cout << "this is the energy matrix:" << std::endl;
@@ -567,111 +556,6 @@ void SeamCarving::RemoveHorzSeams(int HorzSeams)
 //	std::cout << std::endl;
 }
 
-			
-
-
-/*
-
-//Find the minimal column so that we can get ready for removal
-auto SeamCarving::FindMinCol()
-{
-	std::vector<int> values;
-	int column = Width - 1;
-
-	for(int row = 0; row < Height; row++)
-	{
-		values.push_back(CumulativeMatrix[row][column]);
-	}
-
-	auto min_elem = std::min_element(values.begin(), values.end());
-
-	for(int row = 0; row < Height; row++)
-	{
-		if(CumulativeMatrix[row][column] == *min_elem) {
-			return CumulativeMatrix[row].begin() + column;
-		}
-	}
-}
-
-
-
-//Find the Horizonal Seams
-void SeamCarving::FindHorzSeams()
-{
-	std::vector<std::vector<int>>::iterator iter;
-	int row;
-	std::vector<int> Comp;
-	auto MinIter = FindMinCol();
-	Position.clear();
-
-	//Need to find the smallest value in the last column
-	for(int y = 0; y < Height; y++)
-	{
-		if(CumulativeMatrix[y].begin() <= MinIter && MinIter < CumulativeMatrix[y].end())
-		{
-			row = y;
-		}
-	}
-
-	//Think it would be handled something like this
-	//which is similar to how the vertical seams were handled
-	for(int column = Width - 1; column > 0; column--)
-	{
-
-		//Top calculation
-		if(row == 0)
-		{
-			
-		}
-
-		//Bottom calculation
-		else if(row == Height - 1)
-		{
-
-		}
-
-		//If width is less than 3 (or special case)
-		else if(Height <= 3)
-		{
-
-		}
-
-		//Otherwise
-		else
-		{
-
-		}
-	}
-}
-
-//Remove the Horizontal Seams
-
-//Again, figure this would work similar to the vertical seams.
-//Stuck on the part above and not quite sure how to work it out
-
-
-void SeamCarving::RemoveHorzSeams(int HorzSeams) {
-	while(HorzSeams > 0)
-	{
-		PopulateEnergyMatrix();
-		PopulateCumulativeMatrix();
-		FindHorzSeams();
-
-		for(auto i : Position)
-		{
-			ImageMatrix[i.first].erase(ImageMatrix[i.first].begin() + i.second);
-			CumulativeMatrix[i.first].erase(CumulativeMatrix[i.first].begin() + i.second);
-		}
-
-		Height--;
-		HorzSeams--;
-	}
-
-	print(ImageMatrix);
-}
-
-
-*/
 //Output the new Image/file
 void SeamCarving::WriteFile(std::ofstream& output)
 {
