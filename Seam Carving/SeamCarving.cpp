@@ -94,7 +94,7 @@ int main(int argc, char** argv)
 	sCarve.getHeader(Image);
 	sCarve.PopulateImageMatrix(Image);
 	sCarve.RemoveVertSeams(atoi(argv[2]));
-//	sCarve.RemoveHorzSeams(atoi(argv[3]));
+	sCarve.RemoveHorzSeams(atoi(argv[3]));
 	sCarve.WriteFile(ProcessedImage);
 	Image.close();
 	ProcessedImage.close();
@@ -185,9 +185,9 @@ void SeamCarving::PopulateImageMatrix(std::ifstream& Image)
 	}
 //	std::cout << ImageMatrix[y][x];
 //	std::cout << std::endl;
-	std::cout << "This is the image matrix:" << std::endl;
-	print(ImageMatrix);
-	std::cout << std::endl;
+//	std::cout << "This is the image matrix:" << std::endl;
+//	print(ImageMatrix);
+//	std::cout << std::endl;
 }
 
 //Fill in the Matrix which tells you how "active" a cell/pixel is
@@ -277,9 +277,9 @@ void SeamCarving::PopulateEnergyMatrix()
 //			std::cout << EnergyMatrix[y][x] << std::endl;
 		}
 	}
-	std::cout << "this is the energy matrix:" << std::endl;
-	print(EnergyMatrix);
-	std::cout << std::endl;
+//	std::cout << "this is the energy matrix:" << std::endl;
+//	print(EnergyMatrix);
+//	std::cout << std::endl;
 }
 
 //Fill in the Vertical CumulativeMatrix with the difference values from the energy matrix
@@ -322,9 +322,9 @@ void SeamCarving::PopulateCumulativeVertMatrix()
 			}
 		}
 	}
-	std::cout << "This is the PopulateCumulativeVertMatrix:" << std::endl;
-	print(CumulativeMatrix);
-	std::cout << std::endl;
+//	std::cout << "This is the PopulateCumulativeVertMatrix:" << std::endl;
+//	print(CumulativeMatrix);
+//	std::cout << std::endl;
 }
 
 //Find the vertical seams from the cumulative matrix
@@ -437,9 +437,9 @@ void SeamCarving::PopulateCumulativeHorzMatrix()
 			}
 		}
 	}
-	std::cout << "This is the Populate Cumulative Horz matrix:" << std::endl;
-	print(CumulativeMatrix);
-	std::cout << std::endl;
+//	std::cout << "This is the Populate Cumulative Horz matrix:" << std::endl;
+//	print(CumulativeMatrix);
+//	std::cout << std::endl;
 }
 
 //Rotate the matricies so that I can do Horizontal paths
@@ -491,6 +491,9 @@ void SeamCarving::rotate(int a)
 	{
 		std::cout << "Something went horribly wrong" << std::endl;
 	}
+//	std::cout << "this is the rotated matrix for horizontal:" << std::endl;
+//	print(ImageMatrix);
+//	std::cout << std::endl;
 }
 
 //Find the shortest horizontal path
